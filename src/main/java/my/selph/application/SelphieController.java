@@ -50,6 +50,7 @@ public class SelphieController {
     }
 
     @GET
+    @Transactional
     public List<SelphieGet> findAllSelphies() {
         var selphies = Selphie.<Selphie>listAll();
         return selphies.stream().map(i -> selphieMapper.fromEntity(i)).toList();
@@ -57,6 +58,7 @@ public class SelphieController {
 
     @DELETE
     @Path("/{id}")
+    @Transactional
     public Response deleteSelphie(@PathParam("id") long id) {
         if(Selphie.deleteById(id))
             return Response.noContent().build();
