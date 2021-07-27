@@ -21,6 +21,8 @@ public class POSProcessor {
     @ConfigProperty(name = "app.ai.pos-tagger")
     String postModel;
 
+    public static final List<String> ALLOWEDPOS = List.of("NN","NNS","VB","VBZ","VBD","JJ","PRP","PRP$","WP");
+
     public List<TokenPOS> extractPOS(String sentence) throws IOException {
         // tokenise sentence
         var tokenModelIn = getClass().getClassLoader().getResourceAsStream(tokeniserModel);
@@ -40,10 +42,12 @@ public class POSProcessor {
 
         // filter tags
         var tokenPOS = new ArrayList<TokenPOS>();
+        System.out.println("--------");
         for(var i = 0;i < tags.length; i++) {
             var tag = tags[i];
-            //if(tag.startsWith("NN") || tag.startsWith("VB") || tag.equals("JJ"))
+            if(ALLOWEDPOS.contains(tag))
                 tokenPOS.add(new TokenPOS(tokens[i], tag));
+            else System.out.println(tokens[i]+" - "+tags[i]);
         }
 
         return  tokenPOS;
@@ -70,10 +74,12 @@ public class POSProcessor {
 
             // filter tags
             List<TokenPOS> tokenPOS = new ArrayList<>();
+            System.out.println("--------");
             for(var i = 0;i < tags.length; i++) {
                 var tag = tags[i];
-                //if(tag.startsWith("NN") || tag.startsWith("VB") || tag.equals("JJ"))
-                tokenPOS.add(new TokenPOS(tokens[i], tag));
+                if(ALLOWEDPOS.contains(tag))
+                    tokenPOS.add(new TokenPOS(tokens[i], tag));
+                else System.out.println(tokens[i]+" - "+tags[i]);
             }
             return  tokenPOS;
         })

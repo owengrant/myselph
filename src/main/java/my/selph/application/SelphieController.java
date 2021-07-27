@@ -80,12 +80,15 @@ public class SelphieController {
     @Transactional
     public SelphieGet askSelph(@QueryParam("q") String question) throws IOException {
         var selphies = Selphie.<Selphie>listAll();
-        var knowledge = posProcessor.extractPOS(selphies.stream().map(Selphie::getQuestion).toList());
-        var questionTokenPOS = posProcessor.extractPOS(question);
+        var knowledge = posProcessor.extractPOS(
+                selphies.stream()
+                        .map(Selphie::getQuestion)
+                        .map(String::toLowerCase)
+                        .toList()
+        );
+        var questionTokenPOS = posProcessor.extractPOS(question.toLowerCase());
         var bestMatchIndex = tokenPOSMatcher.match(questionTokenPOS, knowledge);
         Selphie selphie = selphies.get(bestMatchIndex);
-        System.out.println("Question POST - "+questionTokenPOS);
-        knowledge.forEach(k -> System.out.println("Knowledge - "+k));
         return selphieMapper.fromEntity(selphie);
     }
 
