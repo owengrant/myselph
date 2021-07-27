@@ -3,6 +3,9 @@ package my.selph.application;
 import my.selph.application.dtos.SelphieGet;
 import my.selph.application.dtos.SelphiePost;
 import my.selph.application.mappers.SelphieMapper;
+import my.selph.domain.ai.POSProcessor;
+import my.selph.domain.ai.TokenPOS;
+import my.selph.domain.ai.TokenPOSMatcher;
 import my.selph.domain.entities.Selphie;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -20,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 @Tag(name = "SelphieController")
@@ -32,6 +36,12 @@ public class SelphieController {
 
     @Inject
     SelphieMapper selphieMapper;
+
+    @Inject
+    POSProcessor posProcessor;
+
+    @Inject
+    TokenPOSMatcher tokenPOSMatcher;
 
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -63,6 +73,20 @@ public class SelphieController {
         if(Selphie.deleteById(id))
             return Response.noContent().build();
         throw new InternalServerErrorException();
+    }
+
+    @GET
+    @Path("/{ask}")
+    @Transactional
+    public SelphieGet askSelph(@QueryParam("q") String question) throws IOException {
+        var selphies = Selphie.<Selphie>listAll();
+        var knowledge = posProcessor.extractPOS(selphies.stream().map(Selphie::getQuestion).toList());
+        var questionTokenPOS = posProcessor.extractPOS(question);
+        var bestMatchIndex = tokenPOSMatcher.match(questionTokenPOS, knowledge);
+        Selphie selphie = selphies.get(bestMatchIndex);
+        System.out.println("Question POST - "+questionTokenPOS);
+        knowledge.forEach(k -> System.out.println("Knowledge - "+k));
+        return selphieMapper.fromEntity(selphie);
     }
 
 }
