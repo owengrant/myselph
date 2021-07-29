@@ -87,8 +87,13 @@ public class SelphieController {
                         .toList()
         );
         var questionTokenPOS = posProcessor.extractPOS(question.toLowerCase());
-        var bestMatchIndex = tokenPOSMatcher.match(questionTokenPOS, knowledge);
-        Selphie selphie = selphies.get(bestMatchIndex);
+        var scores = tokenPOSMatcher.match(questionTokenPOS, knowledge);
+        var highestScoreIndex = 0;
+        for(var i = 0; i < scores.size(); i++) {
+            if (scores.get(highestScoreIndex) < scores.get(i))
+                highestScoreIndex = i;
+        }
+        Selphie selphie = selphies.get(highestScoreIndex);
         return selphieMapper.fromEntity(selphie);
     }
 

@@ -9,17 +9,8 @@ import java.util.List;
 @ApplicationScoped
 public class TokenPOSMatcher {
 
-    public int match(List<TokenPOS> input, List<List<TokenPOS>> knowledge) {
-        var scores = knowledge.stream().map(known -> {
-            return countContainsList(input, known);
-        }).toList();
-        var highestScoreIndex = 0;
-        for(var i = 0; i < scores.size(); i++) {
-            if (scores.get(highestScoreIndex) < scores.get(i))
-                highestScoreIndex = i;
-        }
-        System.out.println(scores);
-        return highestScoreIndex;
+    public List<Long> match(List<TokenPOS> input, List<List<TokenPOS>> knowledge) {
+        return knowledge.stream().map(known -> countContainsList(input, known)).toList();
     }
 
     public long countContainsList(List<TokenPOS> input, List<TokenPOS> knowledge) {
