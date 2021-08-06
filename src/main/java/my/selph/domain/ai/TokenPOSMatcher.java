@@ -23,7 +23,7 @@ public class TokenPOSMatcher {
                 var pt2 = tokenPOS.pos();
                 if(tp1.equals(tp2))
                     return true;
-                if(percentageMatcher(tp1, tp2) >= 0.75)
+                if(percentageMatcher(tp1, tp2) >= 0.8)
                     return true;
             }
             return false;
@@ -35,7 +35,7 @@ public class TokenPOSMatcher {
         var bonusMetric = (Math.abs(word1.length() - word2.length())/10d);
         if(bonusMetric <= 0.3)
             if(word1.contains(word2) || word2.contains(word1))
-                bonus =+ 0.75;
+                bonus =+ 0.8;
 
         var score = new JaroWinklerDistance().apply(word1, word2);
 //        System.out.println();

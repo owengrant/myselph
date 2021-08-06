@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 @Tag(name = "SelphieController")
 @Path("/api/v1/selphies")
@@ -93,6 +94,10 @@ public class SelphieController {
             if (scores.get(highestScoreIndex) < scores.get(i))
                 highestScoreIndex = i;
         }
+
+        System.out.println();
+        IntStream.range(0, scores.size()).forEach(i -> System.out.println(i+" : "+scores.get(i)+" - "+selphies.get(i).getQuestion()));
+
         Selphie selphie = selphies.get(highestScoreIndex);
         return selphieMapper.fromEntity(selphie);
     }

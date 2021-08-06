@@ -21,7 +21,7 @@ public class POSProcessor {
     @ConfigProperty(name = "app.ai.pos-tagger")
     String postModel;
 
-    public static final List<String> ALLOWEDPOS = List.of("NN","NNS","VB","VBZ","VBD","JJ","PRP","PRP$","WP");
+    public static final List<String> ALLOWEDPOS = List.of("NN","NNS","VB","VBG","VBN","JJ","JJS","PRP","PRP$");
 
     public List<TokenPOS> extractPOS(String sentence) throws IOException {
         // tokenise sentence
