@@ -79,7 +79,7 @@ public class SelphieController {
     @GET
     @Path("/{ask}")
     @Transactional
-    public SelphieGet askSelph(@QueryParam("q") String question) throws IOException {
+    public List<SelphieGet> askSelph(@QueryParam("q") String question) throws IOException {
         var selphies = Selphie.<Selphie>listAll();
         var knowledge = posProcessor.extractPOS(
                 selphies.stream()
@@ -98,8 +98,14 @@ public class SelphieController {
         System.out.println();
         IntStream.range(0, scores.size()).forEach(i -> System.out.println(i+" : "+scores.get(i)+" - "+selphies.get(i).getQuestion()));
 
-        Selphie selphie = selphies.get(highestScoreIndex);
-        return selphieMapper.fromEntity(selphie);
+        var result =  IntStream.range(0, scores.size())
+                .filter(i -> scores.get(i) > 0)
+                .mapToObj(selphies::get)
+                .map(selphieMapper::fromEntity)
+                .toList();
+        System.out.println(result);
+
+        return result;
     }
 
 }
