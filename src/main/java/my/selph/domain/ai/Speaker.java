@@ -15,9 +15,9 @@ public class Speaker {
         VoiceManager voiceManager = VoiceManager.getInstance();
         var voice = voiceManager.getVoice("kevin16");
         voice.allocate();
-        var audioPlayer = new SingleFileAudioPlayer("output123", AudioFileFormat.Type.WAVE);
+        var audioPlayer = new SingleFileAudioPlayer("output"+Math.random(), AudioFileFormat.Type.WAVE);
         voice.setAudioPlayer(audioPlayer);
-        voice.setRate(150);
+        voice.setRate(100);
         voice.setPitch(150);
         voice.setVolume(3);
         voice.speak(text);
